@@ -10,8 +10,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./init-db:/docker-entrypoint-initdb.d
-    command: ["postgres", "-c", "shared_preload_libraries=postgis"]
+      - ./src/main/resources/init-db/init-postgis.sql:/docker-entrypoint-initdb.d/init-postgis.sql:ro
 
 
   redis:
