@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ActivityRepository extends JpaRepository<Activity, Long> {
@@ -17,4 +18,5 @@ public interface ActivityRepository extends JpaRepository<Activity, Long> {
     Page<Activity> findAllByOrganizationProfile_AppUser_Username(String username, Pageable pageable);
 
     int deleteByIdAndOrganizationProfile_AppUser_Username(Long id, String username);
+    Page<Activity> findAllByIdIn(List<Long> ids, Pageable pageable);
 }

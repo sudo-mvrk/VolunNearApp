@@ -51,6 +51,11 @@ public class VolunteerService {
         return volunteerProfileMapper.toDto(profile);
     }
 
+    public VolunteerProfile getVolunteerProfileEntity(Principal principal) {
+        return volunteerProfileRepository.findByAppUser_Username(principal.getName())
+                .orElseThrow(() -> new BadUserCredentialsException("User with username" + principal.getName() + " not found"));
+    }
+
     public void deleteVolunteerProfile(Principal principal) {
         if (!volunteerProfileRepository.existsByAppUser_Username(principal.getName())) {
             throw new DataNotFoundException("Volunteer profile with username " + principal.getName() + " not found");

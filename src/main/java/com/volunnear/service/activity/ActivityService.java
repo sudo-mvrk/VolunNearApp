@@ -21,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -71,10 +72,19 @@ public class ActivityService {
         return paginationMapper.mapPage(page, activityMapper::toCardDto);
     }
 
+    public PagedResponseDTO<ActivityCardDTO> getAllActivitiesByIdIn(Pageable pageable, List<Long> activitiesIds) {
+        Page<Activity> page = activityRepository.findAllByIdIn(activitiesIds, pageable);
+        return paginationMapper.mapPage(page, activityMapper::toCardDto);
+    }
+
     public void deleteActivityById(Long id, Principal principal) {
         if (activityRepository.deleteByIdAndOrganizationProfile_AppUser_Username(id, principal.getName()) == 0) {
             throw new DataNotFoundException("Activity not found or not owned by user");
         }
+    }
+
+    public boolean existsActivityById(Long id) {
+        return activityRepository.existsById(id);
     }
 
     private Point resolvePointFromRequest(ActivitySaveRequestDTO dto) {
