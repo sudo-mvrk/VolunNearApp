@@ -2,29 +2,36 @@ package com.volunnear.service.activity;
 
 import com.volunnear.ActivityRequestStatus;
 import com.volunnear.dto.response.PagedResponseDTO;
+import com.volunnear.dto.response.activity.ActivityRequestInfoDTO;
 import com.volunnear.entity.activity.Activity;
 import com.volunnear.entity.activity.VolunteerActivity;
 import com.volunnear.entity.profile.VolunteerProfile;
 import com.volunnear.exception.BadDataInRequestException;
 import com.volunnear.exception.DataNotFoundException;
+import com.volunnear.mapper.PaginationMapper;
+import com.volunnear.mapper.activity.VolunteerActivityMapper;
 import com.volunnear.repository.activity.VolunteerActivityRepository;
 import com.volunnear.service.profile.VolunteerService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
-import java.util.List;
 
+@Slf4j
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class VolunteerParticipationService {
     private final ActivityService activityService;
     private final VolunteerService volunteerService;
+    private final VolunteerActivityMapper volunteerActivityMapper;
     private final VolunteerActivityRepository volunteerActivityRepository;
+    private final PaginationMapper paginationMapper;
 
+    @Transactional
     public void createVolunteerActivityRequest(Long activityId, Principal principal) {
         if (!activityService.existsActivityById(activityId)) {
             throw new DataNotFoundException("Activity with id " + activityId + " not found");
@@ -46,19 +53,41 @@ public class VolunteerParticipationService {
         volunteerActivityRepository.save(volunteerActivity);
     }
 
-    public PagedResponseDTO<?> getAllRequestsByPrincipal(Pageable pageable, Principal principal) {
-        List<VolunteerActivity> allByVolunteerAppUserUsername = volunteerActivityRepository.findAllByVolunteer_AppUser_Username(principal.getName());
-        if (allByVolunteerAppUserUsername.isEmpty()) {
-            throw new DataNotFoundException("Requests for user  " + principal.getName() + " not found");
+    @Transactional(readOnly = true)
+    public PagedResponseDTO<ActivityRequestInfoDTO> getAllRequestsByPrincipalAndStatus(Pageable pageable, String status, Principal principal) {
+        ActivityRequestStatus parsedStatus;
+        try {
+            parsedStatus = ActivityRequestStatus.valueOf(status.trim().toUpperCase());
+        } catch (IllegalArgumentException | NullPointerException e) {
+            throw new BadDataInRequestException("Invalid status value: " + status);
         }
-        List<Long> idList = allByVolunteerAppUserUsername.stream().map(v -> v.getActivity().getId()).toList();
+        Page<VolunteerActivity> page = volunteerActivityRepository.findAllByVolunteer_AppUser_Username_AndStatus(principal.getName(), parsedStatus, pageable);
+        if (page.isEmpty()) {
+            throw new DataNotFoundException("Requests for user  " + principal.getName() + " with status: " + status.trim() + " not found");
+        }
+        return paginationMapper.mapPage(page, volunteerActivityMapper::toDto);
+    }
 
-        // TODO: Write method to parse result from activity service to use only activity id, activity title and status of request
-        return null;
+    @Transactional
+    public void cancelMyActivityRequest(Long activityId, Principal principal) {
+        validateVolunteerActivityRequest(activityId, principal);
+        volunteerActivityRepository.deleteByVolunteer_AppUser_Username_AndActivity_Id_AndStatus(principal.getName(), activityId, ActivityRequestStatus.PENDING);
     }
 
 
-    // TODO: Get my activities (find all volunteer activities by principal)
-    // TODO: Cancel activity request
-    // TODO: Leave activity
+    @Transactional
+    public void leaveActivity(Long activityId, Principal principal) {
+        validateVolunteerActivityRequest(activityId, principal);
+        volunteerActivityRepository.deleteByVolunteer_AppUser_Username_AndActivity_Id_AndStatus(principal.getName(), activityId, ActivityRequestStatus.APPROVED);
+    }
+
+    private void validateVolunteerActivityRequest(Long activityId, Principal principal) {
+        if (!activityService.existsActivityById(activityId)) {
+            throw new DataNotFoundException("Activity with id " + activityId + " not found");
+        }
+        if (!volunteerActivityRepository.existsVolunteerActivityByActivity_IdAndVolunteer_AppUser_Username_AndStatus(activityId,
+                principal.getName(), ActivityRequestStatus.PENDING)) {
+            throw new DataNotFoundException("Request by username " + principal.getName() + " not found by activity with id: " + activityId);
+        }
+    }
 }

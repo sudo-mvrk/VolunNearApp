@@ -18,7 +18,6 @@ public interface ActivityMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "startedAt", expression = "java(LocalDateTime.now())")
-    @Mapping(target = "organizationProfile", source = "organizationProfile")
     @Mapping(target = "location", source = "point")
     @Mapping(target = "city", source = "dto.location.city")
     @Mapping(target = "country", source = "dto.location.country")
@@ -33,9 +32,9 @@ public interface ActivityMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateEntity(ActivitySaveRequestDTO dto, Point point, @MappingTarget Activity activity, @Context GeometryFactory geometryFactory);
 
-    @Mapping(target = "organizationId", source = "activity.organizationProfile.id")
+    @Mapping(target = "organizationId", source = "organizationProfile.id")
     ActivityResponseDTO toDto(Activity activity);
 
-    @Mapping(target = "organizationId", source = "activity.organizationProfile.id")
+    @Mapping(target = "organizationId", source = "organizationProfile.id")
     ActivityCardDTO toCardDto(Activity activity);
 }
