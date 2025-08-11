@@ -5,10 +5,10 @@ import com.volunnear.entity.users.RefreshToken;
 import com.volunnear.exception.TokenRefreshException;
 import com.volunnear.repository.user.AppUserRepository;
 import com.volunnear.repository.user.RefreshTokenRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.Optional;

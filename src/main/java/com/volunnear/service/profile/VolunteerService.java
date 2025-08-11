@@ -10,22 +10,22 @@ import com.volunnear.exception.UserAlreadyExistsException;
 import com.volunnear.mapper.profile.VolunteerProfileMapper;
 import com.volunnear.repository.profile.VolunteerProfileRepository;
 import com.volunnear.service.user.CurrentUserFacade;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
 
 @Slf4j
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class VolunteerService {
     private final CurrentUserFacade currentUserFacade;
     private final VolunteerProfileMapper volunteerProfileMapper;
     private final VolunteerProfileRepository volunteerProfileRepository;
 
+    @Transactional
     public VolunteerProfileResponseDTO createVolunteerProfile(VolunteerProfileSaveRequestDTO createRequest, Principal principal) {
         AppUser appUser = currentUserFacade.getUserFromPrincipal(principal);
         if (currentUserFacade.hasVolunteerProfile(appUser)) {
@@ -36,6 +36,7 @@ public class VolunteerService {
         return volunteerProfileMapper.toDto(volunteerProfile);
     }
 
+    @Transactional
     public VolunteerProfileResponseDTO updateVolunteerProfile(VolunteerProfileSaveRequestDTO editRequest, Principal principal) {
         AppUser appUser = currentUserFacade.getUserFromPrincipal(principal);
         VolunteerProfile profile = volunteerProfileRepository.findByAppUser_Username(appUser.getUsername())
@@ -45,17 +46,20 @@ public class VolunteerService {
         return volunteerProfileMapper.toDto(profile);
     }
 
+    @Transactional(readOnly = true)
     public VolunteerProfileResponseDTO getVolunteerProfile(Principal principal) {
         VolunteerProfile profile = volunteerProfileRepository.findByAppUser_Username(principal.getName())
                 .orElseThrow(() -> new BadUserCredentialsException("User with username" + principal.getName() + " not found"));
         return volunteerProfileMapper.toDto(profile);
     }
 
+    @Transactional(readOnly = true)
     public VolunteerProfile getVolunteerProfileEntity(Principal principal) {
         return volunteerProfileRepository.findByAppUser_Username(principal.getName())
                 .orElseThrow(() -> new BadUserCredentialsException("User with username" + principal.getName() + " not found"));
     }
 
+    @Transactional
     public void deleteVolunteerProfile(Principal principal) {
         if (!volunteerProfileRepository.existsByAppUser_Username(principal.getName())) {
             throw new DataNotFoundException("Volunteer profile with username " + principal.getName() + " not found");

@@ -9,22 +9,22 @@ import com.volunnear.exception.UserAlreadyExistsException;
 import com.volunnear.mapper.profile.OrganizationProfileMapper;
 import com.volunnear.repository.profile.OrganizationProfileRepository;
 import com.volunnear.service.user.CurrentUserFacade;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
 
 @Slf4j
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class OrganizationService {
     private final CurrentUserFacade currentUserFacade;
     private final OrganizationProfileMapper organizationProfileMapper;
     private final OrganizationProfileRepository organizationProfileRepository;
 
+    @Transactional
     public OrganizationProfileResponseDTO createOrganizationProfile(OrganizationProfileSaveRequestDTO createRequest, Principal principal) {
         AppUser appUser = currentUserFacade.getUserFromPrincipal(principal);
         if (currentUserFacade.hasOrganizationProfile(appUser)) {
@@ -35,6 +35,7 @@ public class OrganizationService {
         return organizationProfileMapper.toDto(organizationProfile);
     }
 
+    @Transactional
     public OrganizationProfileResponseDTO updateOrganizationProfile(OrganizationProfileSaveRequestDTO editRequest, Principal principal) {
         OrganizationProfile profile = getOrganizationProfileByPrincipal(principal);
         organizationProfileMapper.updateEntity(editRequest, profile);
@@ -42,16 +43,19 @@ public class OrganizationService {
         return organizationProfileMapper.toDto(profile);
     }
 
+    @Transactional(readOnly = true)
     public OrganizationProfileResponseDTO getOrganizationProfile(Principal principal) {
         return organizationProfileMapper.toDto(getOrganizationProfileByPrincipal(principal));
     }
 
+    @Transactional(readOnly = true)
     public OrganizationProfileResponseDTO getOrganizationProfileById(Long id) {
         OrganizationProfile organizationProfile = organizationProfileRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("User with id " + id + " not found"));
         return organizationProfileMapper.toDto(organizationProfile);
     }
 
+    @Transactional
     public void deleteOrganizationProfile(Principal principal) {
         if (!organizationProfileRepository.existsByAppUser_Username(principal.getName())) {
             throw new DataNotFoundException("Organization profile with username " + principal.getName() + " not found");
@@ -59,6 +63,7 @@ public class OrganizationService {
         currentUserFacade.deleteAppUserByPrincipal(principal);
     }
 
+    @Transactional(readOnly = true)
     public OrganizationProfile getOrganizationProfileByPrincipal(Principal principal) {
         AppUser appUser = currentUserFacade.getUserFromPrincipal(principal);
         return organizationProfileRepository.findByAppUser_Username(appUser.getUsername())
