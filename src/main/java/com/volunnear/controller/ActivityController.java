@@ -25,7 +25,7 @@ public class ActivityController {
     private final OrganizationActivityFacade organizationActivityFacade;
 
     @GetMapping(value = Routes.ACTIVITY_BY_ID)
-    public ActivityResponseDTO getActivityById(@PathVariable("id") Long id) {
+    public ActivityResponseDTO getActivityById(@PathVariable("activityId") Long id) {
         return activityService.getActivityById(id);
     }
 
@@ -47,7 +47,7 @@ public class ActivityController {
     @PreAuthorize("hasRole('ORGANIZATION')")
     @PutMapping(value = Routes.ACTIVITY_BY_ID)
     public ActivityResponseDTO updateActivity(@Valid @RequestBody ActivitySaveRequestDTO requestDTO,
-                                              @NotNull @PathVariable("id") Long id,
+                                              @NotNull @PathVariable("activityId") Long id,
                                               Principal principal) {
         return activityService.updateActivity(requestDTO, id, principal);
     }
@@ -55,7 +55,7 @@ public class ActivityController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ORGANIZATION')")
     @DeleteMapping(value = Routes.ACTIVITY_BY_ID)
-    public void deleteActivityById(@PathVariable("id") Long id, Principal principal) {
+    public void deleteActivityById(@PathVariable("activityId") Long id, Principal principal) {
         activityService.deleteActivityById(id, principal);
     }
 }

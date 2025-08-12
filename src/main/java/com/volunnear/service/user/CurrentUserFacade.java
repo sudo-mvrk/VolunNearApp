@@ -14,7 +14,7 @@ public class CurrentUserFacade {
 
     public AppUser getUserFromPrincipal(Principal principal) {
         return userService.findAppUserByUsername(principal.getName())
-                .orElseThrow(() -> new BadUserCredentialsException("User with username" + principal.getName() + " not found"));
+                .orElseThrow(() -> new BadUserCredentialsException("User with username " + principal.getName() + " not found"));
     }
 
     public void deleteAppUserByPrincipal(Principal principal) {

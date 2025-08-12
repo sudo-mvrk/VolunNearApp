@@ -4,5 +4,6 @@ public enum ActivityRequestStatus {
     PENDING,
     APPROVED,
     REJECTED,
-    FINISHED
+    FINISHED,
+    KICKED
 }

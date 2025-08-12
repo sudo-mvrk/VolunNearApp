@@ -17,6 +17,7 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,9 +44,9 @@ public class ActivityService {
 
     @Transactional
     public ActivityResponseDTO updateActivity(ActivitySaveRequestDTO requestDTO, Long id, Principal principal) {
-        Point point = resolvePointFromRequest(requestDTO);
         Activity activity = activityRepository.findByIdAndOrganizationProfile_AppUser_Username(id, principal.getName())
-                .orElseThrow(() -> new DataNotFoundException("Activity with id: " + id + " not found"));
+                .orElseThrow(() -> new AccessDeniedException("Activity with id: " + id + " not found"));
+        Point point = resolvePointFromRequest(requestDTO);
         activityMapper.updateEntity(requestDTO, point, activity, geometryFactory);
         activityRepository.save(activity);
         return activityMapper.toDto(activity);

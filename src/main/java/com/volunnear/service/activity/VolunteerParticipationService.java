@@ -12,6 +12,7 @@ import com.volunnear.mapper.PaginationMapper;
 import com.volunnear.mapper.activity.VolunteerActivityMapper;
 import com.volunnear.repository.activity.VolunteerActivityRepository;
 import com.volunnear.service.profile.VolunteerService;
+import com.volunnear.util.ActivityStatusParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -26,10 +27,10 @@ import java.security.Principal;
 @RequiredArgsConstructor
 public class VolunteerParticipationService {
     private final ActivityService activityService;
+    private final PaginationMapper paginationMapper;
     private final VolunteerService volunteerService;
     private final VolunteerActivityMapper volunteerActivityMapper;
     private final VolunteerActivityRepository volunteerActivityRepository;
-    private final PaginationMapper paginationMapper;
 
     @Transactional
     public void createVolunteerActivityRequest(Long activityId, Principal principal) {
@@ -55,13 +56,7 @@ public class VolunteerParticipationService {
 
     @Transactional(readOnly = true)
     public PagedResponseDTO<ActivityRequestInfoDTO> getAllRequestsByPrincipalAndStatus(Pageable pageable, String status, Principal principal) {
-        ActivityRequestStatus parsedStatus;
-        try {
-            parsedStatus = ActivityRequestStatus.valueOf(status.trim().toUpperCase());
-        } catch (IllegalArgumentException | NullPointerException e) {
-            throw new BadDataInRequestException("Invalid status value: " + status);
-        }
-        Page<VolunteerActivity> page = volunteerActivityRepository.findAllByVolunteer_AppUser_Username_AndStatus(principal.getName(), parsedStatus, pageable);
+        Page<VolunteerActivity> page = volunteerActivityRepository.findAllByVolunteer_AppUser_Username_AndStatus(principal.getName(), ActivityStatusParser.parse(status), pageable);
         if (page.isEmpty()) {
             throw new DataNotFoundException("Requests for user  " + principal.getName() + " with status: " + status.trim() + " not found");
         }

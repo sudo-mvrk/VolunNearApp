@@ -49,14 +49,14 @@ public class VolunteerService {
     @Transactional(readOnly = true)
     public VolunteerProfileResponseDTO getVolunteerProfile(Principal principal) {
         VolunteerProfile profile = volunteerProfileRepository.findByAppUser_Username(principal.getName())
-                .orElseThrow(() -> new BadUserCredentialsException("User with username" + principal.getName() + " not found"));
+                .orElseThrow(() -> new BadUserCredentialsException("User with username " + principal.getName() + " not found"));
         return volunteerProfileMapper.toDto(profile);
     }
 
     @Transactional(readOnly = true)
     public VolunteerProfile getVolunteerProfileEntity(Principal principal) {
         return volunteerProfileRepository.findByAppUser_Username(principal.getName())
-                .orElseThrow(() -> new BadUserCredentialsException("User with username" + principal.getName() + " not found"));
+                .orElseThrow(() -> new BadUserCredentialsException("User with username " + principal.getName() + " not found"));
     }
 
     @Transactional

@@ -55,6 +55,7 @@ public class UserService implements UserDetailsService {
         appUserRepository.save(user);
         return user.getId();
     }
+
     @Transactional
     public void deleteAppUser(String username) {
         appUserRepository.deleteByUsername(username);

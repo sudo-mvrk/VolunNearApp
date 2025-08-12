@@ -27,14 +27,14 @@ public class Routes {
      */
     private static final String ORGANIZATIONS = API_URL + "/organizations";
     public static final String ACTIVITIES = API_URL + "/activities";
-    public static final String ACTIVITY_BY_ID = ACTIVITIES + "/{id}";
+    public static final String ACTIVITY_BY_ID = ACTIVITIES + "/{activityId}";
     public static final String ORGANIZATION_BY_ID = ORGANIZATIONS + "/{id}";
     public static final String ORGANIZATION_ACTIVITIES_BY_ID = ORGANIZATIONS + "/{id}" + "/activities";
     public static final String ORGANIZATION_ACTIVITIES_BY_PRINCIPAL = ORGANIZATION_PROFILE + "/activities";
 
     public static final String VOLUNTEER_REQUESTS = API_URL + "/volunteer/requests";
     public static final String ACTIVITY_PARTICIPANTS = ACTIVITY_BY_ID + "/participants";
-
+    public static final String PARTICIPANT_BY_ID = ACTIVITY_PARTICIPANTS + "/{volunteerId}";
 
 
 
