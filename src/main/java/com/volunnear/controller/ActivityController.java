@@ -1,6 +1,5 @@
 package com.volunnear.controller;
 
-import com.volunnear.Routes;
 import com.volunnear.annotation.Idempotent;
 import com.volunnear.dto.request.activity.ActivitySaveRequestDTO;
 import com.volunnear.dto.response.PagedResponseDTO;
@@ -19,17 +18,18 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 
 @RestController
+@RequestMapping("/api/v1/activities")
 @RequiredArgsConstructor
 public class ActivityController {
     private final ActivityService activityService;
     private final OrganizationActivityFacade organizationActivityFacade;
 
-    @GetMapping(value = Routes.ACTIVITY_BY_ID)
+    @GetMapping("/{activityId}")
     public ActivityResponseDTO getActivityById(@PathVariable("activityId") Long id) {
         return activityService.getActivityById(id);
     }
 
-    @GetMapping(value = Routes.ACTIVITIES)
+    @GetMapping
     public PagedResponseDTO<ActivityCardDTO> getAllActivities(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
@@ -39,13 +39,13 @@ public class ActivityController {
 
     @Idempotent
     @PreAuthorize("hasRole('ORGANIZATION')")
-    @PostMapping(value = Routes.ACTIVITIES)
+    @PostMapping
     public ActivityResponseDTO createActivity(@Valid @RequestBody ActivitySaveRequestDTO requestDTO, Principal principal) {
         return organizationActivityFacade.createActivity(requestDTO, principal);
     }
 
     @PreAuthorize("hasRole('ORGANIZATION')")
-    @PutMapping(value = Routes.ACTIVITY_BY_ID)
+    @PutMapping("/{activityId}")
     public ActivityResponseDTO updateActivity(@Valid @RequestBody ActivitySaveRequestDTO requestDTO,
                                               @NotNull @PathVariable("activityId") Long id,
                                               Principal principal) {
@@ -54,7 +54,7 @@ public class ActivityController {
 
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ORGANIZATION')")
-    @DeleteMapping(value = Routes.ACTIVITY_BY_ID)
+    @DeleteMapping("/{activityId}")
     public void deleteActivityById(@PathVariable("activityId") Long id, Principal principal) {
         activityService.deleteActivityById(id, principal);
     }

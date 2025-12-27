@@ -1,6 +1,5 @@
 package com.volunnear.controller;
 
-import com.volunnear.Routes;
 import com.volunnear.dto.request.profile.OrganizationProfileSaveRequestDTO;
 import com.volunnear.dto.response.PagedResponseDTO;
 import com.volunnear.dto.response.activity.ActivityCardDTO;
@@ -19,35 +18,40 @@ import java.security.Principal;
 
 @Slf4j
 @RestController
+@RequestMapping("/api/v1/organizations")
 @RequiredArgsConstructor
 public class OrganizationController {
     private final ActivityService activityService;
     private final OrganizationService organizationService;
 
+    // --- My Profile (Organization) ---
     @PreAuthorize("hasRole('ORGANIZATION')")
-    @PostMapping(value = Routes.ORGANIZATION_PROFILE)
+    @PostMapping("/me")
     public OrganizationProfileResponseDTO createOrganizationProfile(@RequestBody @Valid OrganizationProfileSaveRequestDTO requestDTO, Principal principal) {
         return organizationService.createOrganizationProfile(requestDTO, principal);
     }
 
     @PreAuthorize("hasRole('ORGANIZATION')")
-    @PutMapping(value = Routes.ORGANIZATION_PROFILE)
+    @PutMapping("/me")
     public OrganizationProfileResponseDTO updateOrganizationProfile(@RequestBody @Valid OrganizationProfileSaveRequestDTO requestDTO, Principal principal) {
         return organizationService.updateOrganizationProfile(requestDTO, principal);
     }
 
     @PreAuthorize("hasRole('ORGANIZATION')")
-    @GetMapping(value = Routes.ORGANIZATION_PROFILE)
+    @GetMapping("/me")
     public OrganizationProfileResponseDTO getOrganizationProfile(Principal principal) {
         return organizationService.getOrganizationProfile(principal);
     }
 
-    @GetMapping(value = Routes.ORGANIZATION_BY_ID)
-    public OrganizationProfileResponseDTO getOrganizationProfileById(@PathVariable("id") Long id) {
-        return organizationService.getOrganizationProfileById(id);
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ORGANIZATION')")
+    @DeleteMapping("/me")
+    public void deleteOrganizationProfile(Principal principal) {
+        organizationService.deleteOrganizationProfile(principal);
     }
 
-    @GetMapping(value = Routes.ORGANIZATION_ACTIVITIES_BY_PRINCIPAL)
+    @PreAuthorize("hasRole('ORGANIZATION')")
+    @GetMapping("/me/activities")
     public PagedResponseDTO<ActivityCardDTO> getOrganizationActivitiesByPrincipal(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -55,17 +59,17 @@ public class OrganizationController {
         return activityService.getActivitiesByPrincipal(PageRequest.of(page, size), principal);
     }
 
-    @GetMapping(value = Routes.ORGANIZATION_ACTIVITIES_BY_ID)
+    // --- Public Info ---
+    @GetMapping("/{id}")
+    public OrganizationProfileResponseDTO getOrganizationProfileById(@PathVariable("id") Long id) {
+        return organizationService.getOrganizationProfileById(id);
+    }
+
+    @GetMapping("/{id}/activities")
     public PagedResponseDTO<ActivityCardDTO> getActivitiesByOrganizationId(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @PathVariable Long id) {
         return activityService.getActivitiesByOrganizationId(PageRequest.of(page, size), id);
-    }
-
-    @ResponseStatus(value = HttpStatus.OK)
-    @DeleteMapping(value = Routes.ORGANIZATION_PROFILE)
-    public void deleteOrganizationProfile(Principal principal) {
-        organizationService.deleteOrganizationProfile(principal);
     }
 }

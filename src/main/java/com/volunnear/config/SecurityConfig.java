@@ -1,6 +1,5 @@
 package com.volunnear.config;
 
-import com.volunnear.Routes;
 import com.volunnear.security.jwt.JwtAuthEntryPoint;
 import com.volunnear.security.jwt.JwtTokenFilter;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity; // ВАЖНО!
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -21,45 +21,34 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity // <--- ЭТО ВКЛЮЧАЕТ @PreAuthorize в контроллерах
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtAuthEntryPoint jwtAuthEntryPoint;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtTokenFilter jwtTokenFilter) throws Exception {
-        http.authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(
-                                Routes.REGISTER + "/**",
-                                Routes.LOGIN).permitAll()
-                        .requestMatchers(
-                                Routes.SWAGGER_ENDPOINTS).permitAll()
-                        .requestMatchers(
-                                "/v3/api-docs",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/webjars/**").permitAll()
-
-                        .requestMatchers(
-                                Routes.REFRESH_TOKEN).hasAnyRole("VOLUNTEER", "ORGANIZATION")
-
-                        .requestMatchers(HttpMethod.GET,
-                                Routes.ACTIVITIES + "/**",
-                                Routes.ORGANIZATION_ACTIVITIES_BY_ID).permitAll()
-
-                        .requestMatchers(
-                                Routes.VOLUNTEER_PROFILE
-                        ).hasRole("VOLUNTEER")
-
-                        .requestMatchers(
-                                Routes.ACTIVITIES,
-                                Routes.ACTIVITY_BY_ID).hasRole("ORGANIZATION")
-                        .anyRequest().authenticated())
+        http
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults())
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
+
+                        .requestMatchers("/api/v1/auth/**").permitAll()
+
+                        .requestMatchers(HttpMethod.GET, "/api/v1/activities/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/organizations/**").permitAll()
+
+                        .anyRequest().authenticated()
+                )
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthEntryPoint))
-                .logout(Customizer.withDefaults());
-        http.sessionManagement(sessionManagement ->
-                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        http.addFilterAfter(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterAfter(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 

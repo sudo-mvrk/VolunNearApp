@@ -1,6 +1,5 @@
 package com.volunnear.controller;
 
-import com.volunnear.Routes;
 import com.volunnear.dto.response.PagedResponseDTO;
 import com.volunnear.dto.response.ParticipantCardDTO;
 import com.volunnear.service.activity.OrganizationVolunteerActivityManagementService;
@@ -13,12 +12,13 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 
 @RestController
+@RequestMapping("/api/v1/activities/{activityId}/participants")
 @RequiredArgsConstructor
 public class OrganizationVolunteerActivityManagementController {
     private final OrganizationVolunteerActivityManagementService service;
 
     @PreAuthorize("hasRole('ORGANIZATION')")
-    @GetMapping(Routes.ACTIVITY_PARTICIPANTS)
+    @GetMapping
     public PagedResponseDTO<ParticipantCardDTO> getParticipants(@PathVariable Long activityId,
                                                                 @RequestParam(defaultValue = "approved") String status,
                                                                 @RequestParam(defaultValue = "10") int size,
@@ -28,7 +28,7 @@ public class OrganizationVolunteerActivityManagementController {
     }
 
     @PreAuthorize("hasRole('ORGANIZATION')")
-    @PostMapping(Routes.PARTICIPANT_BY_ID + "/approve")
+    @PostMapping("/{volunteerId}/approve")
     public ResponseEntity<Void> approveParticipant(@PathVariable Long activityId,
                                                    @PathVariable Long volunteerId,
                                                    Principal principal) {
@@ -37,12 +37,11 @@ public class OrganizationVolunteerActivityManagementController {
     }
 
     @PreAuthorize("hasRole('ORGANIZATION')")
-    @DeleteMapping(Routes.PARTICIPANT_BY_ID)
+    @DeleteMapping("/{volunteerId}")
     public ResponseEntity<Void> removeParticipant(@PathVariable Long activityId,
                                                   @PathVariable Long volunteerId,
                                                   Principal principal) {
         service.rejectOrKickParticipant(activityId, volunteerId, principal);
         return ResponseEntity.noContent().build();
     }
-
 }
