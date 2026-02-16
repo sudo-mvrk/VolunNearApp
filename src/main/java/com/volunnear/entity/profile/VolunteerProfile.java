@@ -1,5 +1,6 @@
 package com.volunnear.entity.profile;
 
+import com.volunnear.SkillType;
 import com.volunnear.entity.users.AppUser;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -7,6 +8,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -40,4 +43,21 @@ public class VolunteerProfile {
 
     @Column(name = "phone_number", nullable = false)
     private String phone;
+
+    @Column(name = "rating")
+    private Double rating = 0.0;
+
+    @Column(name = "is_busy")
+    private Boolean isBusy = false;
+    private Double latitude;
+    private Double longitude;
+    private String address;
+    private String country;
+    private String city;
+
+    @ElementCollection(targetClass = SkillType.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "volunteer_skills", joinColumns = @JoinColumn(name = "volunteer_id"))
+    @Enumerated(EnumType.STRING)
+    @Column(name = "skill")
+    private Set<SkillType> skills = new HashSet<>();
 }

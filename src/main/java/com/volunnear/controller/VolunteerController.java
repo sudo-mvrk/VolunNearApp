@@ -16,11 +16,6 @@ import java.security.Principal;
 public class VolunteerController {
     private final VolunteerService volunteerService;
 
-    @PostMapping("/me")
-    public VolunteerProfileResponseDTO createVolunteerProfile(@RequestBody @Valid VolunteerProfileSaveRequestDTO createRequest, Principal principal) {
-        return volunteerService.createVolunteerProfile(createRequest, principal);
-    }
-
     @PutMapping("/me")
     public VolunteerProfileResponseDTO updateVolunteerProfile(@RequestBody @Valid VolunteerProfileSaveRequestDTO updateRequest, Principal principal) {
         return volunteerService.updateVolunteerProfile(updateRequest, principal);

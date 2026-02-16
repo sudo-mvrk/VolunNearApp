@@ -24,13 +24,6 @@ public class OrganizationController {
     private final ActivityService activityService;
     private final OrganizationService organizationService;
 
-    // --- My Profile (Organization) ---
-    @PreAuthorize("hasRole('ORGANIZATION')")
-    @PostMapping("/me")
-    public OrganizationProfileResponseDTO createOrganizationProfile(@RequestBody @Valid OrganizationProfileSaveRequestDTO requestDTO, Principal principal) {
-        return organizationService.createOrganizationProfile(requestDTO, principal);
-    }
-
     @PreAuthorize("hasRole('ORGANIZATION')")
     @PutMapping("/me")
     public OrganizationProfileResponseDTO updateOrganizationProfile(@RequestBody @Valid OrganizationProfileSaveRequestDTO requestDTO, Principal principal) {

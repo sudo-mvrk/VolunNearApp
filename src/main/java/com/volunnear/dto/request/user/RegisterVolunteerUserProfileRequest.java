@@ -1,40 +1,32 @@
-package com.volunnear.dto.request.profile;
+package com.volunnear.dto.request.user;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.volunnear.SkillType;
 import com.volunnear.annotation.ValidPhoneNumber;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.Set;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class VolunteerProfileSaveRequestDTO {
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+public class RegisterVolunteerUserProfileRequest extends RegisterAppUserDTO{
+
     @NotBlank
     private String firstName;
     @NotBlank
     private String lastName;
     @NotBlank
     private String middleName;
-    private String about;
     @NotNull
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthday;
     @NotBlank
     @ValidPhoneNumber
     private String phone;
-    @NotNull
-    private Double latitude;
-    @NotNull
-    private Double longitude;
-    @NotEmpty
-    private Set<SkillType> skills;
-    private Integer workRadiusKm;
 }

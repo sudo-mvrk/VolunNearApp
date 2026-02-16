@@ -1,5 +1,7 @@
 package com.volunnear.entity.activity;
 
+import com.volunnear.Priority;
+import com.volunnear.SkillType;
 import com.volunnear.entity.profile.OrganizationProfile;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -8,6 +10,8 @@ import lombok.ToString;
 import org.locationtech.jts.geom.Point;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -32,7 +36,6 @@ public class Activity {
     @Column(name = "short_description")
     private String shortDescription;
 
-    @Lob
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
@@ -49,4 +52,12 @@ public class Activity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "org_id", nullable = false)
     private OrganizationProfile organizationProfile;
+    @Enumerated(EnumType.STRING)
+    private Priority priority = Priority.MEDIUM;
+
+    @ElementCollection(targetClass = SkillType.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "activity_required_skills", joinColumns = @JoinColumn(name = "activity_id"))
+    @Enumerated(EnumType.STRING)
+    @Column(name = "skill")
+    private Set<SkillType> requiredSkills = new HashSet<>();
 }

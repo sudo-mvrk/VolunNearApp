@@ -10,6 +10,7 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -37,5 +38,43 @@ public class GeoService {
         double lon = Double.parseDouble(response.lon());
 
         return geometryFactory.createPoint(new Coordinate(lon, lat));
+    }
+    public AddressDTO reverseGeocode(double lat, double lon) {
+        log.info("Reverse geocoding for lat: {}, lon: {}", lat, lon);
+
+        try {
+            GeoCodingResponse response = nominatimClient.reverse(lat, lon, "json");
+
+            if (response == null || response.address() == null) {
+                throw new GeoCodingException("Address not found for coordinates: " + lat + ", " + lon);
+            }
+
+            GeoCodingResponse.AddressDetails details = response.address();
+
+            String city =  details.city();
+            if (!StringUtils.hasText(city)) city = details.town();
+            if (!StringUtils.hasText(city)) city = details.village();
+
+            String streetAddress = details.road();
+            if (StringUtils.hasText(details.house_number())) {
+                streetAddress += ", " + details.house_number();
+            }
+
+            return AddressDTO.builder()
+                    .country(details.country())
+                    .city(city)
+                    .address(streetAddress != null ? streetAddress : response.displayName())
+                    .latitude(lat)
+                    .longitude(lon)
+                    .build();
+
+        } catch (Exception e) {
+            log.error("Error during reverse geocoding", e);
+            return AddressDTO.builder()
+                    .latitude(lat)
+                    .longitude(lon)
+                    .address("Unknown location")
+                    .build();
+        }
     }
 }

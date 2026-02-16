@@ -1,4 +1,7 @@
 spring:
+  jackson:
+    mapper:
+      accept-case-insensitive-enums: true
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}

@@ -29,7 +29,7 @@ public class OrganizationProfile {
     @Column(name = "organization_name", nullable = false)
     private String organizationName;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description")
     private String description;
 
     @Column(name = "country", nullable = false)
@@ -44,7 +44,7 @@ public class OrganizationProfile {
     @Column(name = "phone", nullable = false)
     private String phone;
 
-    @Column(name = "website", nullable = false)
+    @Column(name = "website")
     private String website;
 
     @ToString.Exclude

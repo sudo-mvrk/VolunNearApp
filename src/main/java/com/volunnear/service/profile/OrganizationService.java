@@ -5,7 +5,6 @@ import com.volunnear.dto.response.profile.OrganizationProfileResponseDTO;
 import com.volunnear.entity.profile.OrganizationProfile;
 import com.volunnear.entity.users.AppUser;
 import com.volunnear.exception.DataNotFoundException;
-import com.volunnear.exception.UserAlreadyExistsException;
 import com.volunnear.mapper.profile.OrganizationProfileMapper;
 import com.volunnear.repository.profile.OrganizationProfileRepository;
 import com.volunnear.service.user.CurrentUserFacade;
@@ -23,17 +22,6 @@ public class OrganizationService {
     private final CurrentUserFacade currentUserFacade;
     private final OrganizationProfileMapper organizationProfileMapper;
     private final OrganizationProfileRepository organizationProfileRepository;
-
-    @Transactional
-    public OrganizationProfileResponseDTO createOrganizationProfile(OrganizationProfileSaveRequestDTO createRequest, Principal principal) {
-        AppUser appUser = currentUserFacade.getUserFromPrincipal(principal);
-        if (currentUserFacade.hasOrganizationProfile(appUser)) {
-            throw new UserAlreadyExistsException("Organization profile with username " + appUser.getUsername() + " already exists, try update profile");
-        }
-        OrganizationProfile organizationProfile = organizationProfileMapper.toEntity(createRequest, appUser);
-        organizationProfileRepository.save(organizationProfile);
-        return organizationProfileMapper.toDto(organizationProfile);
-    }
 
     @Transactional
     public OrganizationProfileResponseDTO updateOrganizationProfile(OrganizationProfileSaveRequestDTO editRequest, Principal principal) {

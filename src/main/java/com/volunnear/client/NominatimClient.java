@@ -20,4 +20,10 @@ public interface NominatimClient {
             @RequestParam("format") String format,
             @RequestParam("limit") int limit
     );
+    @GetMapping(value = "/reverse", produces = "application/json")
+    GeoCodingResponse reverse(
+            @RequestParam("lat") double lat,
+            @RequestParam("lon") double lon,
+            @RequestParam("format") String format
+    );
 }

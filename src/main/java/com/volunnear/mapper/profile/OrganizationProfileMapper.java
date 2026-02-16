@@ -1,6 +1,7 @@
 package com.volunnear.mapper.profile;
 
 import com.volunnear.dto.request.profile.OrganizationProfileSaveRequestDTO;
+import com.volunnear.dto.request.user.RegisterOrganizationUserProfileRequest;
 import com.volunnear.dto.response.profile.OrganizationProfileResponseDTO;
 import com.volunnear.entity.profile.OrganizationProfile;
 import com.volunnear.entity.users.AppUser;
@@ -14,7 +15,7 @@ import java.util.List;
 public interface OrganizationProfileMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "appUser", source = "appUser")
-    OrganizationProfile toEntity(OrganizationProfileSaveRequestDTO dto, AppUser appUser);
+    OrganizationProfile toEntity(RegisterOrganizationUserProfileRequest dto, AppUser appUser);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateEntity(OrganizationProfileSaveRequestDTO dto, @MappingTarget OrganizationProfile profile);

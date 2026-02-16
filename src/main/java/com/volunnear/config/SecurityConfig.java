@@ -21,7 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity // <--- ЭТО ВКЛЮЧАЕТ @PreAuthorize в контроллерах
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtAuthEntryPoint jwtAuthEntryPoint;
@@ -35,7 +35,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
-                                "/swagger-ui.html"
+                                "/swagger-ui.html",
+                                "/swagger.json"
                         ).permitAll()
 
                         .requestMatchers("/api/v1/auth/**").permitAll()
