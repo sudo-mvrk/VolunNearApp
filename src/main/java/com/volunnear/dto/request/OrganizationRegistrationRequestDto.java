@@ -5,10 +5,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-import java.time.LocalDate;
-
-
-public record VolunteerRegistrationRequestDto(
+public record OrganizationRegistrationRequestDto(
         @Size(min = 3, max = 25)
         @NotBlank
         String username,
@@ -19,9 +16,6 @@ public record VolunteerRegistrationRequestDto(
         @NotBlank
         String email,
         @NotBlank
-        String firstName,
-        @NotBlank
-        String lastName,
-        LocalDate dateOfBirth
+        String organizationName
 ) implements RegistrationCredentials {
 }
