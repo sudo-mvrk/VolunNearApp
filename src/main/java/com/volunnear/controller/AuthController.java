@@ -1,6 +1,7 @@
 package com.volunnear.controller;
 
 import com.volunnear.dto.request.LoginRequestDto;
+import com.volunnear.dto.request.OrganizationRegistrationRequestDto;
 import com.volunnear.dto.request.VolunteerRegistrationRequestDto;
 import com.volunnear.dto.response.AppUserResponseDto;
 import com.volunnear.security.SecurityFacade;
@@ -28,9 +29,11 @@ public class AuthController {
         return authService.registerVolunteer(request);
     }
 
-    @PostMapping("/register/organization")
-    public void registerOrganization() {
 
+    @PostMapping("/register/organization")
+    @ResponseStatus(code = HttpStatus.CREATED)
+    public AppUserResponseDto registerOrganization(@RequestBody @Valid OrganizationRegistrationRequestDto request) {
+        return authService.registerOrganization(request);
     }
 
     @PostMapping("/login")

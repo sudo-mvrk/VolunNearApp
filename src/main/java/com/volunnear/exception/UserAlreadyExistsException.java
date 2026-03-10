@@ -2,11 +2,16 @@ package com.volunnear.exception;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 @Data
+@Getter
 @EqualsAndHashCode(callSuper = true)
 public class UserAlreadyExistsException extends RuntimeException {
-    public UserAlreadyExistsException(String message) {
+    private final String field;
+
+    public UserAlreadyExistsException(String field, String message) {
         super(message);
+        this.field = field;
     }
 }
