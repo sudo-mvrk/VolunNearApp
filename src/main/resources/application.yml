@@ -11,15 +11,6 @@ spring:
     generate-ddl: true
     hibernate:
       ddl-auto: update
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: ${EMAIL_USERNAME}
-    password: ${EMAIL_PASSWORD}
-    properties.mail.smtp:
-      auth: true
-      starttls-enable: true
-    protocol: smtp
   data:
     redis:
       port: 6380
@@ -31,12 +22,6 @@ server:
     include-exception: true
     include-message: always
     include-binding-errors: always
-jwt:
-  token:
-    secret: "volun-near-app-2024"
-    lifetime: 3600000
-  refreshToken:
-    lifetime: 5400000
 management:
   metrics:
     enable:
