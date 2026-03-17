@@ -1,3 +1,9 @@
+# ❗ Current state ❗
+For now project have reboot state, i`m rebuilding all logic and structure from very begining to implement new knowledges and skills. 
+Current state can be viewed at [VolunNearApp/mvp-reboot](https://github.com/sudo-mvrk/VolunNearApp/tree/mvp-reboot) branch.
+
+Of course, you can run the old version by following the steps below.
+
 # VolunNearApp
 **VolunNearApp** where people can search for a place where they want to volunteer based on their location and wishes (kind of activity), and volunteer organizations can “post” their places where people can to volunteer.
 
