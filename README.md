@@ -11,10 +11,15 @@ Of course, you can run the old version by following the steps below.
 After building VolunNearApp go to, all endpoints of API at that link: http://localhost:8080/swagger-ui/index.html
 
 ## To build the project
-1. Create a package (JAR) of project (from root folder): mvn package
-2. After that start (also root folder): docker compose up
-3. Wait for the finish of application launching
-4. For api docs go to [swagger link](http://localhost:8080/swagger-ui/index.html)
+1. Create a package (JAR) of project (from root folder):
+   ```bash
+   mvn package
+   ```
+3. After that start (also root folder):
+   ```bash
+   docker compose up
+   ```
+4. For api docs go to http://localhost:8080/swagger-ui/index.html
 5. For work use HTTP requests as an example you can use Postman
 ## For build from application-dev
 For build from dev profile (this is the main one for now) env variables are required:
