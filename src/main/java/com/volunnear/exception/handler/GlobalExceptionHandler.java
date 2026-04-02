@@ -5,6 +5,7 @@ import com.volunnear.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,10 +17,30 @@ import java.util.Map;
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(BadUserCredentialsException.class)
-    public ResponseEntity<ErrorResponse> handleBadCredentialsException(BadUserCredentialsException e) {
+    @ExceptionHandler({
+            BadUserCredentialsException.class,
+            AuthErrorException.class,
+            TokenRefreshException.class,
+            UnauthorizedException.class
+    })
+    public ResponseEntity<ErrorResponse> handleUnauthorizedExceptions(RuntimeException e) {
         log.trace(e.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler({BadDataInRequestException.class, GeoCodingException.class})
+    public ResponseEntity<ErrorResponse> handleBadRequestsExceptions(BadDataInRequestException e) {
+        log.trace(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException e) {
+        log.trace(e.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse.of(
+                "Invalid username or password",
+                null
+        ));
     }
 
     @ExceptionHandler(DataNotFoundException.class)
@@ -28,28 +49,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(e.getMessage()));
     }
 
-    @ExceptionHandler(AuthErrorException.class)
-    public ResponseEntity<ErrorResponse> handleAuthErrorException(AuthErrorException e) {
-        log.trace(e.getMessage());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(e.getMessage()));
-    }
-
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleUserAlreadyExistsException(UserAlreadyExistsException e) {
         log.trace(e.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(e.getMessage()));
-    }
-
-    @ExceptionHandler(BadDataInRequestException.class)
-    public ResponseEntity<ErrorResponse> handleBadDataInRequestException(BadDataInRequestException e) {
-        log.trace(e.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
-    }
-
-    @ExceptionHandler(TokenRefreshException.class)
-    public ResponseEntity<ErrorResponse> handleTokenRefreshException(TokenRefreshException e) {
-        log.trace(e.getMessage());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(e.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -61,20 +64,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(ErrorResponse.of("Validation failed", errors));
     }
 
-    @ExceptionHandler(GeoCodingException.class)
-    public ResponseEntity<ErrorResponse> handleGeoCodingException(GeoCodingException e) {
-        log.trace(e.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
-    }
-
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException e) {
         log.trace(e.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(e.getMessage()));
     }
-    @ExceptionHandler(UnauthorizedException.class)
-    public ResponseEntity<ErrorResponse> handleUnauthorizedException(UnauthorizedException e) {
-        log.trace(e.getMessage());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(e.getMessage()));
-    }
+
 }
