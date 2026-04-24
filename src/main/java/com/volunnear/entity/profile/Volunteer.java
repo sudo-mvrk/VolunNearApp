@@ -32,5 +32,9 @@ public class Volunteer {
     private String bio;
     private Point location;
     private String locationName;
+    @Column(length = 2)
+    private String countryCode;
+    private String city;
+    private String region;
     private Integer radius;
 }

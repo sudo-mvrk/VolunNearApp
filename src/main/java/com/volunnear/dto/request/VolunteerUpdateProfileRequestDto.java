@@ -20,7 +20,9 @@ public record VolunteerUpdateProfileRequestDto(
         @Max(value = 180, message = "Longitude can't be more than 180")
         Double lon,
         String locationName,
+        String countryCode,
+        String city,
+        String region,
         Integer radius
-
 ) {
 }

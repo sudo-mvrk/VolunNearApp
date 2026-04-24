@@ -13,6 +13,9 @@ public record VolunteerProfileResponseDto (
    LocalDate datoOfBirth,
    String bio,
    String locationName,
+   String countryCode,
+   String city,
+   String region,
    Integer radius
 ) {
 }
