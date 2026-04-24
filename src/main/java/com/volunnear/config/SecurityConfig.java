@@ -26,6 +26,7 @@ import java.util.List;
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+    private static final String roleVolunteer = "VOLUNTEER";
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -42,6 +43,7 @@ public class SecurityConfig {
                                 "/swagger.json"
                         ).permitAll()
 
+                        .requestMatchers("/api/v1/volunteers/**").hasRole(roleVolunteer)
                         .requestMatchers("/api/v1/auth/login", "/api/v1/auth/register/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/activities/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/organizations/**").permitAll()

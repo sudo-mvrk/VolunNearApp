@@ -1,9 +1,7 @@
 package com.volunnear.dto.request;
 
 import com.volunnear.dto.RegistrationCredentials;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
@@ -22,6 +20,8 @@ public record VolunteerRegistrationRequestDto(
         String firstName,
         @NotBlank
         String lastName,
+        @NotNull(message = "Date of birth shouldn't be empty")
+        @Past(message = "Date of birth should be in the past")
         LocalDate dateOfBirth
 ) implements RegistrationCredentials {
 }

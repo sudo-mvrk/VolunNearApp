@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.locationtech.jts.geom.Point;
 
 import java.time.LocalDate;
 
@@ -25,5 +26,11 @@ public class Volunteer {
     private AppUser appUser;
     private String firstName;
     private String lastName;
+    @Column(columnDefinition = "DATE")
     private LocalDate dateOfBirth;
+    @Lob
+    private String bio;
+    private Point location;
+    private String locationName;
+    private Integer radius;
 }
