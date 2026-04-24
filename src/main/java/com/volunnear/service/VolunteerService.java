@@ -29,7 +29,7 @@ public class VolunteerService {
     public VolunteerProfileResponseDto updateVolunteerProfile (VolunteerUpdateProfileRequestDto request, CustomUserDetails userDetails) {
         Volunteer volunteer = volunteerRepository.findByAppUser_Username(userDetails.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("User with username " + userDetails.getUsername() + " not found. Try re-login"));
-        Volunteer updatedEntity = volunteerMapper.updateEntity(request, volunteer);
-        return volunteerMapper.toDto(updatedEntity);
+        volunteerMapper.updateEntity(request, volunteer);
+        return volunteerMapper.toDto(volunteer);
     }
 }
