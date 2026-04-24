@@ -24,7 +24,7 @@ public interface VolunteerMapper {
     @Mapping(target = "location", source = "requestDto", qualifiedByName = "toPoint")
     Volunteer updateEntity(VolunteerUpdateProfileRequestDto requestDto, @MappingTarget Volunteer volunteer);
 
-    @Mapping(target = "username", source = "volunteer.appUser.username")
+    @Mapping(target = "username", source = "appUser.username")
     VolunteerProfileResponseDto toDto(Volunteer volunteer);
 
     @Named("toPoint")
