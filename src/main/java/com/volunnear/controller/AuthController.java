@@ -25,21 +25,23 @@ public class AuthController {
     private final SecurityFacade securityFacade;
 
     @GetMapping("/csrf")
-    public CsrfToken getCsrfToken(CsrfToken token) {
-        return token;
+    public ResponseEntity<CsrfToken> getCsrfToken(CsrfToken token) {
+        return ResponseEntity.ok(token);
     }
 
     @PostMapping("/register/volunteer")
     @ResponseStatus(code = HttpStatus.CREATED)
-    public AppUserResponseDto registerVolunteer(@RequestBody @Valid VolunteerRegistrationRequestDto request) {
-        return authService.registerVolunteer(request);
+    public ResponseEntity<AppUserResponseDto> registerVolunteer(@RequestBody @Valid VolunteerRegistrationRequestDto request) {
+        AppUserResponseDto response = authService.registerVolunteer(request);
+        return ResponseEntity.ok(response);
     }
 
 
     @PostMapping("/register/organization")
     @ResponseStatus(code = HttpStatus.CREATED)
-    public AppUserResponseDto registerOrganization(@RequestBody @Valid OrganizationRegistrationRequestDto request) {
-        return authService.registerOrganization(request);
+    public ResponseEntity<AppUserResponseDto> registerOrganization(@RequestBody @Valid OrganizationRegistrationRequestDto request) {
+        AppUserResponseDto response = authService.registerOrganization(request);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/login")
@@ -51,7 +53,8 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public AppUserResponseDto getMyProfile(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        return authService.getMyProfile(userDetails);
+    public ResponseEntity<AppUserResponseDto> getMyProfile(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        AppUserResponseDto response = authService.getMyProfile(userDetails);
+        return ResponseEntity.ok(response);
     }
 }
