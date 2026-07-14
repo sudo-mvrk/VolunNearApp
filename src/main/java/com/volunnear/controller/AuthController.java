@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,11 +22,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final AuthService authService;
     private final SecurityFacade securityFacade;
-
-    @GetMapping("/csrf")
-    public ResponseEntity<CsrfToken> getCsrfToken(CsrfToken token) {
-        return ResponseEntity.ok(token);
-    }
 
     @PostMapping("/register/volunteer")
     @ResponseStatus(code = HttpStatus.CREATED)
