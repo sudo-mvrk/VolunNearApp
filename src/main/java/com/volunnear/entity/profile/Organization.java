@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.locationtech.jts.geom.Point;
 
 @Getter
 @Setter
@@ -28,4 +29,8 @@ public class Organization {
     @Lob
     private String description;
     private String websiteUrl;
+    private Point location;
+    private String city;
+    private String fullAddress;
+    private String countryCode;
 }
