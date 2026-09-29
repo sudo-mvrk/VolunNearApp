@@ -28,8 +28,6 @@ public class Volunteer {
     private String lastName;
     @Column(columnDefinition = "DATE")
     private LocalDate dateOfBirth;
-    @Lob
-    private String bio;
     private Point location;
     private String locationName;
     @Column(length = 2)
