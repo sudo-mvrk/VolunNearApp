@@ -47,6 +47,8 @@ Out of scope for now: chat, ratings, payments, mobile app, analytics dashboards,
 
 ## Working agreement
 0. At the start of a session read `docs/TODO.md`: its "Next session: start here" section says where the work stands. Rewrite that section at the end of the session.
+   Local notes on how the developer works and on this machine are in `docs/LOCAL_NOTES.md`. The file is not committed (it is in `.gitignore`) and is imported here so it loads with this file: @docs/LOCAL_NOTES.md
+   Never commit or force-add it. Update it in the same session when a preference or a machine fact changes.
 1. For any task larger than a small edit, propose a plan first and wait for approval.
 2. Work in small vertical slices. One slice = migration + entity + repository + service + controller + tests.
 3. Run `./mvnw clean verify` before declaring a slice done. Report failures honestly.

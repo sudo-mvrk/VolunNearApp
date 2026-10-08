@@ -37,3 +37,5 @@ build/
 ### Local Redis data (docker compose volume) ###
 redisdata/
 .claude/
+### Local session notes for Claude Code (not published) ###
+docs/LOCAL_NOTES.md
