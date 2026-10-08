@@ -1,10 +1,42 @@
 # TODO
 
 Status legend: `[ ]` not started, `[~]` in progress, `[x]` done.
-Rule: one slice per session. Run `./mvnw clean verify` and commit before ticking.
+Rule: finish one slice before starting the next. Run `./mvnw clean verify` and commit before ticking.
 
 Slice order is the one in `docs/PLAN.md`, approved on 2026-10-08: `0 → 6a → 6b → 1 → 2 → 3 → 4 → 5 → 6c → 5b → 6d → 7 → 8 → 9`.
 Rules are in `CLAUDE.md` (repo root), decisions in `docs/ANALYSIS.md` section 6, the scoring spec in `docs/FUNCTION.md`.
+
+## Next session: start here
+State at the end of 2026-10-08. Rewrite this section at the end of every session.
+
+Read first: `CLAUDE.md` (loaded automatically), this file, then for the slice at hand its entry in `docs/PLAN.md` and the decisions in `docs/ANALYSIS.md` section 6. `docs/FUNCTION.md` only when touching scoring.
+
+Where things stand:
+- Done: Slice 0 (baseline), 6a (pure scoring), 6b (feasibility and ranking). `./mvnw clean verify` is green with 134 tests.
+- Next: **Slice 1, auth hardening.** Then 2, 3, 4, 5, 6c, 5b, (6d), 7, 8, 9, evaluation.
+- Git: branch `mvp-reboot`. Everything up to 6a is pushed; the 6b commit and later doc commits may be local only, check with `git status -sb`. Push only when the developer says so.
+- `docs/` is tracked and pushed on purpose (decided 2026-10-08).
+- Local services: `docker compose up -d postgres redis`. The dev database is fresh and migrated by Flyway (V1). Redis requires `REDIS_PASSWORD`.
+
+How the developer works:
+- Says "lets move to slice X" to start a slice; the plan is approved, so no new plan is needed for a slice that follows `docs/PLAN.md`.
+- Edge cases the spec does not settle are asked before coding, with a recommendation (see Q13a, Q13b, Q14a). Small implementation choices are made and reported.
+- Commits follow the existing style: `feat/ ...`, `ref/ ...`, `docs/ ...`, one logical step per commit.
+
+What exists in code, so it is not rebuilt:
+- Packages under `com.volunnear`: `auth`, `organization`, `volunteer`, `dictionary` (Skill), `activity` (only the `Priority` and `ActivityStatus` enums), `application` (only `ApplicationStatus`), `common` (`config`, `exception`, `validation`), `distribution` (`scoring`, `model`, `feasibility`, `ranking`).
+- `distribution` is finished pure code with no Spring or JPA and is not wired to anything yet. Slice 6c adds the entity adapter, configuration properties and endpoints; it must not change the scoring or feasibility rules.
+- Schema: `V1__baseline.sql` only (`app_users`, `user_role`, `volunteers`, `organizations`, `skills`). There are no activity or application tables or entities; Slices 4 and 5 create them. Every schema change is a new migration.
+- Tests: integration tests extend `support.AbstractIntegrationTest` (PostGIS in Testcontainers, in-memory sessions, `MockMvc`) and send `.with(csrf())` on every modifying request. Distribution tests build data with `distribution.Profiles`.
+
+Known facts for Slice 1 (found while reading the code, none fixed yet):
+- Banned users can log in: `AppUser.isBanned` exists but `CustomUserDetails.isAccountNonLocked()` always returns true.
+- `OrganizationService` and `VolunteerService` throw `UsernameNotFoundException`, which has no handler, so the client gets 500.
+- `GlobalExceptionHandler` handles `java.nio.file.AccessDeniedException`, not Spring Security's `AccessDeniedException`; the handler never fires.
+- `SecurityConfig`: `/api/v1/volunteers/**` requires role VOLUNTEER, but `PUT /api/v1/organizations/me` only requires authentication, so a volunteer reaches the service and gets the 500 above instead of 403.
+- `SecurityConfig` permits `/api/v1/auth/csrf`, but no controller serves it. A real client has no clean way to get its first CSRF token.
+- In `AuthControllerIntegrationTest` the fixture user `testVol` is created with `ROLE_ORGANIZATION`.
+- Already done ahead of Slice 1: registration returns 201; invalid login returns 401 and is tested.
 
 ## Phase A: Analysis and plan (no feature code yet)
 - [x] Read `docs/FUNCTION.md` and any existing code or docs in the repo

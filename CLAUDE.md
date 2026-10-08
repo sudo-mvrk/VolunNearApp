@@ -46,6 +46,7 @@ In scope: accounts and roles, volunteer profiles (location, skills, certificatio
 Out of scope for now: chat, ratings, payments, mobile app, analytics dashboards, learning weights from data, social features, frontend (API first).
 
 ## Working agreement
+0. At the start of a session read `docs/TODO.md`: its "Next session: start here" section says where the work stands. Rewrite that section at the end of the session.
 1. For any task larger than a small edit, propose a plan first and wait for approval.
 2. Work in small vertical slices. One slice = migration + entity + repository + service + controller + tests.
 3. Run `./mvnw clean verify` before declaring a slice done. Report failures honestly.
