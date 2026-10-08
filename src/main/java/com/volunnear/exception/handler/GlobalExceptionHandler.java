@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(e.getMessage()));
     }
 
-    @ExceptionHandler({BadDataInRequestException.class, GeoCodingException.class})
+    @ExceptionHandler(BadDataInRequestException.class)
     public ResponseEntity<ErrorResponse> handleBadRequestsExceptions(BadDataInRequestException e) {
         log.trace(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
