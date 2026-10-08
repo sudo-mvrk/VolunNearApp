@@ -41,7 +41,7 @@ Rules are in `CLAUDE.md` (repo root), decisions in `docs/ANALYSIS.md` section 6,
 - [x] `.gitignore`: `docs/` line is gone; `redisdata/` added (Slice 0)
 - [x] Move `CLAUDE.md` from `docs/` to the repo root so Claude Code loads it (Slice 0)
 - [x] `CLAUDE.md`: compose service name is `postgres`, not `db` (Slice 0)
-- [ ] Developer: recreate the local dev database. The stopped container `volunnearapp-postgres-1` still has the schema built by `ddl-auto`, and Flyway refuses a non-empty schema without a history table: `docker compose rm -sfv postgres && docker compose up -d postgres`
+- [x] Local dev database recreated on 2026-10-08; the app starts against it, Flyway applies V1 and `/actuator/health` returns 200 (Slice 0)
 - [ ] `testcontainers.version` is pinned to 1.21.4 in `pom.xml` because the version managed by Boot 3.3.3 cannot talk to Docker 29; drop the pin when Spring Boot is upgraded
 - [ ] Registration and logout need a CSRF token: the client must call `GET /api/v1/auth/csrf` first, but no such endpoint exists (only the security rule). Decide in Slice 1
 - [ ] Unused leftovers kept for now: `TokenRefreshException`, `AuthErrorException`, `BadUserCredentialsException`, `ValidPhoneNumber`, `spring-boot-starter-mail`, the `logging.level` block for RestTemplate/apache in `application.yml` (Slice 1 or 7)
