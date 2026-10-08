@@ -13,15 +13,16 @@ This is a master's degree project (an update of a bachelor's project) and an MVP
 - springdoc-openapi for API docs
 
 ## Commands
-- Build and test: `./mvnw clean verify`
+- Build and test: `./mvnw clean verify` (integration tests start PostgreSQL in Testcontainers, so Docker must be running)
 - Run tests only: `./mvnw test`
-- Start local DB: `docker compose up -d db`
-- Run app: `./mvnw spring-boot:run`
+- Start local DB and Redis: `docker compose up -d postgres redis`
+- Run app: `./mvnw spring-boot:run` (needs `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`, `REDIS_PASSWORD`; see `.env`)
 
 (Update this section if the commands change.)
 
 ## Architecture and conventions
-- Package by feature under the base package: `auth`, `organization`, `volunteer`, `activity`, `application`, `distribution`, `notification`.
+- Package by feature under the base package `com.volunnear`: `auth`, `organization`, `volunteer`, `activity`, `application`, `distribution`, `notification`. Shared code: `dictionary` (skills, later certifications) and `common` (`config`, `exception`, `validation`). DTOs of a feature live in its `dto` subpackage.
+- Integration tests extend `support.AbstractIntegrationTest` (shared PostGIS container, in-memory sessions) and send a CSRF token on every modifying request.
 - Layers per feature: `controller` -> `service` -> `repository`. No business logic in controllers.
 - Controllers use DTOs (records). Never expose JPA entities in the API.
 - Every schema change is a new Flyway migration. Never edit an applied migration.
@@ -48,5 +49,5 @@ Out of scope for now: chat, ratings, payments, mobile app, analytics dashboards,
 2. Work in small vertical slices. One slice = migration + entity + repository + service + controller + tests.
 3. Run `./mvnw clean verify` before declaring a slice done. Report failures honestly.
 4. Do not add features, dependencies or abstractions beyond the current slice.
-5. Keep `TODO.md` up to date: tick completed items and add newly discovered work.
+5. Keep `docs/TODO.md` up to date: tick completed items and add newly discovered work.
 6. Explain non-obvious decisions briefly in your reply. The developer is learning the codebase.
