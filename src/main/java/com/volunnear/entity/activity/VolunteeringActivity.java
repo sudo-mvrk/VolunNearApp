@@ -8,6 +8,7 @@ import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.locationtech.jts.geom.Point;
 
 import java.time.LocalDateTime;
 
@@ -36,6 +37,8 @@ public class VolunteeringActivity {
     private String fullDescription;
     @Enumerated(EnumType.STRING)
     private Priority priority;
+    @Column(name = "location", columnDefinition = "geometry(Point, 4326)", nullable = false)
+    private Point location;
     // TODO: Implement Schedule
     @Column(nullable = false)
     private Integer capacity;

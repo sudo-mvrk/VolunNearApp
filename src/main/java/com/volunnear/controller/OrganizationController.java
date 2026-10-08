@@ -3,7 +3,7 @@ package com.volunnear.controller;
 import com.volunnear.dto.request.OrganizationUpdateProfileRequestDto;
 import com.volunnear.dto.response.profile.OrganizationProfileResponseDto;
 import com.volunnear.security.detail.CustomUserDetails;
-import com.volunnear.service.OrganizationService;
+import com.volunnear.service.user.OrganizationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -1,10 +1,11 @@
-package com.volunnear.service;
+package com.volunnear.service.user;
 
 import com.volunnear.dto.request.OrganizationRegistrationRequestDto;
 import com.volunnear.dto.request.OrganizationUpdateProfileRequestDto;
 import com.volunnear.dto.response.profile.OrganizationProfileResponseDto;
 import com.volunnear.entity.profile.Organization;
 import com.volunnear.entity.user.AppUser;
+import com.volunnear.exception.DataNotFoundException;
 import com.volunnear.mapper.OrganizationMapper;
 import com.volunnear.repository.OrganizationRepository;
 import com.volunnear.security.detail.CustomUserDetails;
@@ -28,8 +29,17 @@ public class OrganizationService {
     @Transactional
     public OrganizationProfileResponseDto updateOrganizationProfile(OrganizationUpdateProfileRequestDto request, CustomUserDetails userDetails) {
         Organization organization = organizationRepository.findOrganizationByAppUser_Username(userDetails.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("User with username " + userDetails.getUsername() + " not found"));
+                .orElseThrow(() -> throwUsernameNotFoundException(userDetails.getUsername()));
         organizationMapper.updateEntity(request, organization);
         return organizationMapper.toDto(organization);
+    }
+
+    public Organization getOrganizationByUsername(CustomUserDetails userDetails) {
+        return organizationRepository.findOrganizationByAppUser_Username(userDetails.getUsername())
+                .orElseThrow(() -> throwUsernameNotFoundException(userDetails.getUsername()));
+    }
+
+    private UsernameNotFoundException throwUsernameNotFoundException(String username) {
+        return new UsernameNotFoundException("User with username " + username + " not found");
     }
 }

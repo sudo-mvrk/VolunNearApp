@@ -1,4 +1,4 @@
-package com.volunnear.service;
+package com.volunnear.service.user;
 
 import com.volunnear.dto.request.VolunteerRegistrationRequestDto;
 import com.volunnear.dto.request.VolunteerUpdateProfileRequestDto;

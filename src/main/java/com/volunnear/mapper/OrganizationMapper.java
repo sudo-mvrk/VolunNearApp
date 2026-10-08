@@ -9,10 +9,7 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.PrecisionModel;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.Named;
+import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
 public interface OrganizationMapper {
@@ -24,6 +21,7 @@ public interface OrganizationMapper {
     OrganizationProfileResponseDto toDto(Organization organization);
 
     @Mapping(target = "location", source = "requestDto", qualifiedByName = "toPoint")
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Organization updateEntity(OrganizationUpdateProfileRequestDto requestDto, @MappingTarget Organization organization);
 
     @Named("toPoint")
@@ -32,7 +30,6 @@ public interface OrganizationMapper {
             return null;
         }
         GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
-
         return geometryFactory.createPoint(new Coordinate(dto.lon(), dto.lat()));
     }
 }

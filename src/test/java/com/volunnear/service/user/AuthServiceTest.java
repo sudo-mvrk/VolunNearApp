@@ -10,8 +10,6 @@ import com.volunnear.mapper.AppUserMapper;
 import com.volunnear.repository.AppUserRepository;
 import com.volunnear.repository.OrganizationRepository;
 import com.volunnear.repository.VolunteerRepository;
-import com.volunnear.service.OrganizationService;
-import com.volunnear.service.VolunteerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

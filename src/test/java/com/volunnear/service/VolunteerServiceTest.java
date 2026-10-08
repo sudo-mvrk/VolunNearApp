@@ -7,6 +7,7 @@ import com.volunnear.entity.user.AppUser;
 import com.volunnear.mapper.VolunteerMapper;
 import com.volunnear.repository.VolunteerRepository;
 import com.volunnear.security.detail.CustomUserDetails;
+import com.volunnear.service.user.VolunteerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
