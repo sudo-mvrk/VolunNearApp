@@ -16,7 +16,8 @@ This is a master's degree project (an update of a bachelor's project) and an MVP
 - Build and test: `./mvnw clean verify` (integration tests start PostgreSQL in Testcontainers, so Docker must be running)
 - Run tests only: `./mvnw test`
 - Start local DB and Redis: `docker compose up -d postgres redis`
-- Run app: `./mvnw spring-boot:run` (needs `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`, `REDIS_PASSWORD`; see `.env`)
+- Run app: `set -a; . ./.env; set +a; ./mvnw spring-boot:run` (`.env` is ignored by git; `.env.example` lists the variables)
+- Run everything in containers: `./mvnw package -DskipTests && docker compose up -d --build`
 
 (Update this section if the commands change.)
 

@@ -10,18 +10,20 @@ Java 21, Spring Boot 3.3, Maven wrapper, PostgreSQL with PostGIS, Flyway, Redis 
 
 ## Run locally
 
-1. Create `.env` in the repo root (it is not committed):
+1. Create `.env` in the repo root: `cp .env.example .env` and fill in the values. `.env` is ignored by git.
 
    | Name | Value |
    |--|--|
-   | `POSTGRE_DB` | database name used by `docker-compose.yml` |
+   | `POSTGRE_DB` | database name |
    | `DB_USERNAME` | database user |
    | `DB_PASSWORD` | database password |
-   | `DB_URL` | JDBC url, for example `jdbc:postgresql://localhost:5432/<POSTGRE_DB>` |
-   | `REDIS_PASSWORD` | Redis password |
+   | `DB_URL` | JDBC url for running on the host: `jdbc:postgresql://localhost:5432/<POSTGRE_DB>` |
+   | `REDIS_PASSWORD` | Redis password (Redis is started with `--requirepass`) |
 
-2. Start PostgreSQL and Redis: `docker compose up -d postgres redis`
-3. Start the application with the same variables in its environment: `./mvnw spring-boot:run`
+2. Start PostgreSQL and Redis: `docker compose up -d postgres redis`. Compose reads `.env` by itself.
+3. Start the application on the host with the same variables: `set -a; . ./.env; set +a; ./mvnw spring-boot:run`
+
+To run the application in a container instead of step 3: `./mvnw package -DskipTests && docker compose up -d --build`. The app service gets `.env` through `env_file`; compose overrides the database and Redis hosts with the service names.
 
 Flyway creates the schema on startup (`src/main/resources/db/migration`). Hibernate only validates it.
 

@@ -45,7 +45,8 @@ Rules are in `CLAUDE.md` (repo root), decisions in `docs/ANALYSIS.md` section 6,
 - [ ] `testcontainers.version` is pinned to 1.21.4 in `pom.xml` because the version managed by Boot 3.3.3 cannot talk to Docker 29; drop the pin when Spring Boot is upgraded
 - [ ] Registration and logout need a CSRF token: the client must call `GET /api/v1/auth/csrf` first, but no such endpoint exists (only the security rule). Decide in Slice 1
 - [ ] Unused leftovers kept for now: `TokenRefreshException`, `AuthErrorException`, `BadUserCredentialsException`, `ValidPhoneNumber`, `spring-boot-starter-mail`, the `logging.level` block for RestTemplate/apache in `application.yml` (Slice 1 or 7)
-- [ ] `Dockerfile` copies `application.yml` as `application-dev.yml` and starts with profile `dev`; check it still makes sense (Slice 9)
+- [x] `docker-compose.yml` uses `.env` for every service: required-variable checks, Redis really requires `REDIS_PASSWORD`, the app container gets `.env` via `env_file`; `.env.example` and `.dockerignore` added (2026-10-08)
+- [ ] `Dockerfile` copies `application.yml` as `application-dev.yml` and starts with profile `dev`; it works but the copy is redundant, the jar already contains the file (Slice 9)
 - [ ] `ApplicationStatus` mixes `REJECT` and `CANCELED` naming (Slice 5)
 - [ ] Per-activity weight override on the activity entity and DTOs (Slice 4), used only for activity → volunteers (Slice 6c)
 - [ ] PostGIS radius prefilter for volunteer → activities (Slice 6c)
