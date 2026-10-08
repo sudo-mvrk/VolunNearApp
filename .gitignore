@@ -36,3 +36,4 @@ build/
 
 ### Local Redis data (docker compose volume) ###
 redisdata/
+.claude/
