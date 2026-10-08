@@ -1,0 +1,38 @@
+package com.volunnear.volunteer;
+
+import com.volunnear.auth.AppUser;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import org.locationtech.jts.geom.Point;
+
+import java.time.LocalDate;
+
+@Entity
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "volunteers")
+public class Volunteer {
+    @Id
+    private Long id;
+    @MapsId
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private AppUser appUser;
+    private String firstName;
+    private String lastName;
+    @Column(columnDefinition = "DATE")
+    private LocalDate dateOfBirth;
+    private Point location;
+    private String locationName;
+    @Column(length = 2)
+    private String countryCode;
+    private String city;
+    private String region;
+    private Integer radius;
+}
