@@ -36,3 +36,6 @@ build/
 
 ### Local Redis data (docker compose volume) ###
 redisdata/
+
+### Local working documents (thesis material, not published) ###
+docs/

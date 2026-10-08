@@ -1,6 +1,6 @@
 # VolunNearApp
 
-Volunteer management platform with **Smart Distribution**: it recommends and assigns volunteers to activities using a multi-attribute scoring function (distance, skills, priority). The function is specified in `docs/FUNCTION.md`.
+Volunteer management platform with **Smart Distribution**: it recommends and assigns volunteers to activities using a multi-attribute scoring function (distance, skills, priority).
 
 This branch (`mvp-reboot`) is the MVP rewrite of the bachelor project. It is API first; there is no frontend.
 
@@ -40,8 +40,4 @@ Integration tests start `postgis/postgis` in Testcontainers, so Docker must be r
 
 ## Documentation
 
-- `CLAUDE.md`: project rules and conventions
-- `docs/FUNCTION.md`: the scoring function
-- `docs/ANALYSIS.md`: analysis and decisions
-- `docs/PLAN.md`: slices with acceptance criteria
-- `docs/TODO.md`: progress
+`CLAUDE.md` holds the project rules and conventions. The analysis, plan and scoring specification are working documents kept locally in `docs/` and are not part of the repository.
