@@ -21,18 +21,16 @@ public class AuthController {
     private final SecurityFacade securityFacade;
 
     @PostMapping("/register/volunteer")
-    @ResponseStatus(code = HttpStatus.CREATED)
     public ResponseEntity<AppUserResponseDto> registerVolunteer(@RequestBody @Valid VolunteerRegistrationRequestDto request) {
         AppUserResponseDto response = authService.registerVolunteer(request);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
 
     @PostMapping("/register/organization")
-    @ResponseStatus(code = HttpStatus.CREATED)
     public ResponseEntity<AppUserResponseDto> registerOrganization(@RequestBody @Valid OrganizationRegistrationRequestDto request) {
         AppUserResponseDto response = authService.registerOrganization(request);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/login")

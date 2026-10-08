@@ -1,11 +1,10 @@
+# Shadows src/main/resources/application.yml in tests, so it has to be complete.
+# The datasource comes from the Testcontainers PostgreSQL in AbstractIntegrationTest.
 spring:
-  datasource:
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+  jackson:
+    mapper:
+      accept-case-insensitive-enums: true
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+    open-in-view: false
     hibernate:
-      ddl-auto: create-drop
-    show-sql: true
+      ddl-auto: validate

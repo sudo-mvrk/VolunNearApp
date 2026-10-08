@@ -1,6 +1,6 @@
 package com.volunnear.auth;
 
-import com.volunnear.support.TestSessionConfig;
+import com.volunnear.support.AbstractIntegrationTest;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -8,17 +8,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -26,16 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @Transactional
-@AutoConfigureMockMvc
-@SpringBootTest(properties = {
-        "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration",
-        "management.health.redis.enabled=false"
-})
-@Import(TestSessionConfig.class)
-class AuthControllerIntegrationTest {
-    @Autowired
-    private MockMvc mockMvc;
-
+class AuthControllerIntegrationTest extends AbstractIntegrationTest {
 
     static Stream<String> provideInvalidOrganizationRequests() {
         return Stream.of(
@@ -73,6 +61,7 @@ class AuthControllerIntegrationTest {
     @MethodSource("provideInvalidOrganizationRequests")
     void shouldReturn400WhenRegistrationOrganizationDataInvalid(String invalidJson) throws Exception {
         mockMvc.perform(post("/api/v1/auth/register/organization")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(invalidJson))
                 .andExpect(status().isBadRequest());
@@ -93,6 +82,7 @@ class AuthControllerIntegrationTest {
                 """;
 
         mockMvc.perform(post("/api/v1/auth/register/volunteer")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson))
                 .andExpect(status().isCreated())
@@ -111,6 +101,7 @@ class AuthControllerIntegrationTest {
                 }
                 """;
         mockMvc.perform(post("/api/v1/auth/register/organization")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson))
                 .andExpect(status().isCreated())
@@ -166,11 +157,12 @@ class AuthControllerIntegrationTest {
 
         @ParameterizedTest
         @MethodSource("provideInvalidLoginCredentials")
-        void shouldReturn403WhenLoginCredentialsAreInvalid(String invalidLoginJson) throws Exception {
+        void shouldReturn401WhenLoginCredentialsAreInvalid(String invalidLoginJson) throws Exception {
             mockMvc.perform(post("/api/v1/auth/login")
-                            .contentType(MediaType.APPLICATION_JSON)
+                            .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
                             .content(invalidLoginJson))
-                    .andExpect(status().isForbidden())
+                    .andExpect(status().isUnauthorized())
                     .andExpect(unauthenticated());
         }
 
@@ -195,7 +187,8 @@ class AuthControllerIntegrationTest {
         @MethodSource("provideLoginRequestForOrganizationAndVolunteer")
         void shouldSuccessfullyLoginAndReturnSessionCookie(String loginJson) throws Exception {
             mockMvc.perform(post("/api/v1/auth/login")
-                            .contentType(MediaType.APPLICATION_JSON)
+                            .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
                             .content(loginJson))
                     .andDo(print())
                     .andExpect(status().isOk())
@@ -207,6 +200,7 @@ class AuthControllerIntegrationTest {
             Cookie accessCookie = new Cookie("SESSION", "dummy-session-id");
 
             mockMvc.perform(post("/api/v1/auth/logout")
+                    .with(csrf())
                     .cookie(accessCookie))
                     .andExpect(status().isOk())
                     .andExpect(cookie().maxAge("SESSION",0));

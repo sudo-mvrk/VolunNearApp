@@ -26,7 +26,7 @@ public class Organization {
     private AppUser appUser;
     @Column(nullable = false)
     private String organizationName;
-    @Lob
+    @Column(columnDefinition = "text")
     private String description;
     private String websiteUrl;
     private Point location;

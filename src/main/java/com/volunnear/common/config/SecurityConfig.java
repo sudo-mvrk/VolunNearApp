@@ -42,6 +42,7 @@ public class SecurityConfig {
                                 "/swagger-ui.html",
                                 "/swagger.json"
                         ).permitAll()
+                        .requestMatchers("/actuator/health").permitAll()
 
                         .requestMatchers("/api/v1/volunteers/**").hasRole(roleVolunteer)
                         .requestMatchers("/api/v1/auth/login", "/api/v1/auth/register/**").permitAll()
