@@ -266,6 +266,12 @@ All questions were answered by the developer on 2026-10-07. "Changed" marks an a
 - **Q15. Platform conditions** (activity `OPEN`, free spots, no existing application, not banned) are part of the feasible set as a separate named predicate, next to the `FUNCTION.md` filter.
 - **Q16. `Cap(v)` is the remaining capacity of volunteer `v`, counted in activities and calculated.** The volunteer stores `maxActiveAssignments`; `Cap(v)` = that minus the accepted applications on activities not yet completed or cancelled. No stored counter is decremented.
 
+Edge cases answered on 2026-10-08, while building Slice 6b:
+
+- **Q14a. `validUntil` is inclusive.** A certification is valid through the end of its `validUntil` day; it fails only when `validUntil` is before the date of the activity start.
+- **Q13a. Slots of one day combine.** Slots that touch or overlap are merged before the coverage check, so 09:00-12:00 and 12:00-15:00 cover 10:00-14:00. Any gap inside the window fails.
+- **Q13b. Windows are half-open `[start, end)`.** An accepted activity that ends at the minute another starts does not block it. No travel time is modelled.
+
 ### Assignment (Slices 6c and 6d)
 
 - **Q17. Ranked top-N list** with breakdown and a limit parameter; `v*` is the first element. Tie-break as in `FUNCTION.md` 4: larger `u_skill`, then larger `u_geo`, then lower id for a deterministic order.
