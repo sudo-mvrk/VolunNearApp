@@ -33,3 +33,6 @@ build/
 .vscode/
 
 .env
+
+### Local Redis data (docker compose volume) ###
+redisdata/
