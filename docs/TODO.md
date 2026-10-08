@@ -15,7 +15,7 @@ Rules are in `CLAUDE.md` (repo root), decisions in `docs/ANALYSIS.md` section 6,
 
 ## Phase B: Baseline and scoring core
 - [x] Slice 0: Stabilise the existing project: commit current work, package by feature, Flyway baseline, Testcontainers instead of H2, fix the 8 failing auth tests, health endpoint, remove dead files and unused dependencies
-- [ ] Slice 6a: Pure scoring code from `FUNCTION.md` with hand-computed unit tests, including weight validation
+- [x] Slice 6a: Pure scoring code from `FUNCTION.md` with hand-computed unit tests, including weight validation
 - [ ] Slice 6b: Feasibility filter (availability, certification, capacity) and ranking with tie-break, with tests
 
 ## Phase C: Platform
@@ -48,6 +48,8 @@ Rules are in `CLAUDE.md` (repo root), decisions in `docs/ANALYSIS.md` section 6,
 - [x] `docker-compose.yml` uses `.env` for every service: required-variable checks, Redis really requires `REDIS_PASSWORD`, the app container gets `.env` via `env_file`; `.env.example` and `.dockerignore` added (2026-10-08)
 - [ ] `Dockerfile` copies `application.yml` as `application-dev.yml` and starts with profile `dev`; it works but the copy is redundant, the jar already contains the file (Slice 9)
 - [ ] `ApplicationStatus` mixes `REJECT` and `CANCELED` naming (Slice 5)
+- [ ] Scoring takes skill vectors as `Map<skillId, weight>` and positions as nullable `GeoPoint`; the `VolunteerProfile` / `ActivityProfile` records from ANALYSIS section 4 are introduced in Slice 6b, where feasibility needs them
+- [ ] The adapter must map the `Priority` enum as it is; the numeric scale 1..4 lives only in `ScoringFunction.priorityValue` (Slice 6c)
 - [ ] Per-activity weight override on the activity entity and DTOs (Slice 4), used only for activity → volunteers (Slice 6c)
 - [ ] PostGIS radius prefilter for volunteer → activities (Slice 6c)
 
